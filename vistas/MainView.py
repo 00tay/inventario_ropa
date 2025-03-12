@@ -33,7 +33,7 @@ class MainView():
         self.entry_search.pack(side="left", padx=5)
         image = Image.open("./assets/lupa.png").resize((50, 50))
         image_tk   = ImageTk.PhotoImage(image)
-        button = tk.Button(search_frame, text="Buscar",image=image_tk, compound="right" command=self.buscar_productos)
+        button = tk.Button(search_frame, text="Buscar",image=image_tk, compound="right", command=self.buscar_productos)
         button.pack(side="left")
 
     def load_productos(self):
