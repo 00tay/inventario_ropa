@@ -1,5 +1,10 @@
 import tkinter as tk
 from PIL import Image, ImageTk
+from screeninfo import get_monitors
+
+def get_monitor_info():
+    monitors = get_monitors()
+    return monitors[0].width
 
 class MainView():
     def __init__(self, root):
@@ -12,7 +17,7 @@ class MainView():
     def centrar_pantalla(self):
         width = 800
         height = 600
-        screen_width = self.root.winfo_screenwidth()
+        screen_width = get_monitor_info()
         screen_height = self.root.winfo_screenheight()
         x_pos = (screen_width - width) // 2
         y_pos = (screen_height - height) // 2
@@ -31,9 +36,9 @@ class MainView():
         tk.Label(search_frame, text="Productos").pack(side="left")
         self.entry_search = tk.Entry(search_frame)
         self.entry_search.pack(side="left", padx=5)
-        image = Image.open("./assets/lupa.png").resize((50, 50))
+        image = Image.open("./assets/lupa.png").resize((25, 25))
         self.image_tk   = ImageTk.PhotoImage(image)
-        button = tk.Button(search_frame, text="Buscar",image=self.image_tk, compound="right", command=self.buscar_productos)
+        button = tk.Button(search_frame,image=self.image_tk, compound="right", command=self.buscar_productos)
         button.pack(side="left")
 
     def load_productos(self):
