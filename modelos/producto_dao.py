@@ -18,7 +18,6 @@ class ProductoDao:
             print(f"[!] Error al agregar el producto: {e}")
             return None
 
-
     def get_object(self, producto_id):
         try:
             with get_connection() as connection:
@@ -40,6 +39,24 @@ class ProductoDao:
         except Exception as e:
             print(f"[!] Error al obtener el producto: {e}")
             return None
+
+    def list_objects(self):
+        try:
+            with get_connection() as connection:
+                cursor = connection.cursor()
+                cursor.execute("SELECT id, nombre, categoria, precio, proveedor FROM productos")
+                productos = cursor.fetchall()
+                lista_productos = []
+                for producto in productos:
+                    cursor.execute("SELECT  talla, stock, color FROM variantes WHERE productos_id = ?", (producto[0],))
+                    variantes = [{"talla": variante[0], "stock": variante[1], "color": variante[2]} for variante in cursor.fetchall()]
+                    producto = Producto(producto[1], producto[2], producto[3], producto[4], producto[0], variantes)
+                    lista_productos.append(producto)
+                return lista_productos
+            
+        except Exception as e:
+            print(f"Error al obtener los productos: {e}")
+            return []
         
 class VarianteDao:
     def agregar_variante(self, variante, producto_id):

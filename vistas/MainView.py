@@ -1,6 +1,7 @@
 import tkinter as tk
 from PIL import Image, ImageTk
 from screeninfo import get_monitors
+from controladores.producto_controlador import ProductoControlador
 
 def get_monitor_info():
     monitors = get_monitors()
@@ -41,8 +42,34 @@ class MainView():
         button = tk.Button(search_frame,image=self.image_tk, compound="right", command=self.buscar_productos)
         button.pack(side="left")
 
-    def load_productos(self):
+        self.listbox_productos = tk.Listbox(self.frame_lista, width=82)
+        self.listbox_productos.pack(padx=10, pady=10)
+        # self.listbox_productos.bind("<Double-Button-1>", self.abrir_modificar_producto)
+
+        frame_buttons = tk.Frame(self.frame_lista)
+        frame_buttons.pack(pady=5)
+        tk.Button(frame_buttons, text="Add product", command=self.add_product).pack(side="left", pady=5)
+        tk.Button(frame_buttons, text="Modify product", command=self.modify_product).pack(side="left", pady=5)
+        tk.Button(frame_buttons, text="Delete product", command=self.delete_product).pack(side="left", pady=5)
+
+    def add_product(self):
         pass
+
+    def modify_product(self):
+        pass
+
+    def delete_product(self):
+        pass
+
+    def load_productos(self):
+        producto_controlador = ProductoControlador()
+        self.listbox_productos.delete(0, tk.END)
+        productos = producto_controlador.get_products()
+        for producto in productos:
+            self.listbox_productos.insert(
+                tk.END,
+                f"ID: {producto.id} | Nombre: {producto.nombre} | Precio: {producto.precio} | Proveedor: {producto.proveedor} | Categoria: {producto.categoria}"
+            )
 
     def buscar_productos(self):
         pass
