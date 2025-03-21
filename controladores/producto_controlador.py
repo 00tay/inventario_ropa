@@ -17,6 +17,11 @@ class ProductoControlador:
             return producto
         return None
 
+    def get_product(self, nombre):
+        producto = ProductoDao()
+        producto = producto.get_object(nombre)
+        return producto
+
     def get_products(self):
         producto = ProductoDao()
         productos = producto.list_objects()

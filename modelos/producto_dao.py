@@ -18,24 +18,18 @@ class ProductoDao:
             print(f"[!] Error al agregar el producto: {e}")
             return None
 
-    def get_object(self, producto_id):
+    def get_object(self, nombre):
         try:
             with get_connection() as connection:
                 cursor = connection.cursor()
-                cursor.execute("SELECT * FROM productos WHERE id = ?", (producto_id,))
-                producto_data = cursor.fetchone()
-                if producto_data:
-                    producto = Producto(*producto_data)
+                cursor.execute("SELECT * FROM productos ")
+                productos = cursor.fetchall()
+                list_productos = []
+                for producto in productos:
+                    if nombre in producto[1]:
+                        list_productos.append(producto)
+                return list_productos
 
-                    cursor.execute("SELECT * FROM variantes WHERE productos_id = ?", (producto_id,))
-                    variantes_data = cursor.fetchall()
-                    for variante_data in variantes_data:
-                        variante = Variante(*variante_data)
-                        producto.variantes.append(variante)
-
-                    return producto
-                return None
-            
         except Exception as e:
             print(f"[!] Error al obtener el producto: {e}")
             return None
@@ -73,3 +67,4 @@ class VarianteDao:
         except Exception as e:
             print(f"[!] Error al agregar la variante: {e}")
             return None
+

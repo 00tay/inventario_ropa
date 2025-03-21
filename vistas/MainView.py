@@ -72,7 +72,20 @@ class MainView():
             )
 
     def buscar_productos(self):
-        pass
+        producto_controlador = ProductoControlador()
+        nombre = self.entry_search.get().strip()
+        if nombre == "":
+            self.load_productos()
+            return
+        self.listbox_productos.delete(0, tk.END)
+        productos = producto_controlador.get_product(nombre)
+        for producto in productos:
+            self.listbox_productos.insert(
+                tk.END,
+                f"ID: {producto[0]} | Nombre: {producto[1]} | Precio: {producto[2]} | Proveedor: {producto[3]} | Categoria: {producto[4]}"
+            )
+        
+        
 
 if __name__ == '__main__':
     root = tk.Tk()

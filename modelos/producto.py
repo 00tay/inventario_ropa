@@ -1,12 +1,12 @@
 class Producto:
     
-    def __init__(self, nombre, categoria, precio, proveedor, id=None):
+    def __init__(self, nombre, categoria, precio, proveedor, id=None, variantes=[]):
         self.id = id
         self.nombre = nombre
         self.precio = precio
         self.categoria = categoria
         self.proveedor = proveedor
-        self.variantes = []
+        self.variantes = variantes
 
 class Variante:
     
