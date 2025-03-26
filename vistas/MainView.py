@@ -13,7 +13,7 @@ class MainView():
         self.root.title("Inventario de Productos")
         self.centrar_pantalla()
         self.create_widgets()
-        self.load_productos()
+        self.load_productos("")
 
     def centrar_pantalla(self):
         width = 800
@@ -37,9 +37,10 @@ class MainView():
         tk.Label(search_frame, text="Productos").pack(side="left")
         self.entry_search = tk.Entry(search_frame)
         self.entry_search.pack(side="left", padx=5)
+        self.entry_search.bind("<Return>", lambda event: self.load_productos(self.entry_search.get().strip()))
         image = Image.open("./assets/lupa.png").resize((25, 25))
         self.image_tk   = ImageTk.PhotoImage(image)
-        button = tk.Button(search_frame,image=self.image_tk, compound="right", command=self.buscar_productos)
+        button = tk.Button(search_frame,image=self.image_tk, compound="right", command=lambda: self.load_productos(self.entry_search.get().strip()))
         button.pack(side="left")
 
         self.listbox_productos = tk.Listbox(self.frame_lista, width=82)
@@ -61,31 +62,18 @@ class MainView():
     def delete_product(self):
         pass
 
-    def load_productos(self):
-        producto_controlador = ProductoControlador()
+    def list_products(self, productos):
         self.listbox_productos.delete(0, tk.END)
-        productos = producto_controlador.get_products()
         for producto in productos:
             self.listbox_productos.insert(
                 tk.END,
                 f"ID: {producto.id} | Nombre: {producto.nombre} | Precio: {producto.precio} | Proveedor: {producto.proveedor} | Categoria: {producto.categoria}"
             )
 
-    def buscar_productos(self):
+    def load_productos(self, nombre):
         producto_controlador = ProductoControlador()
-        nombre = self.entry_search.get().strip()
-        if nombre == "":
-            self.load_productos()
-            return
-        self.listbox_productos.delete(0, tk.END)
-        productos = producto_controlador.get_product(nombre)
-        for producto in productos:
-            self.listbox_productos.insert(
-                tk.END,
-                f"ID: {producto[0]} | Nombre: {producto[1]} | Precio: {producto[2]} | Proveedor: {producto[3]} | Categoria: {producto[4]}"
-            )
-        
-        
+        productos = producto_controlador.get_products(nombre)
+        self.list_products(productos)
 
 if __name__ == '__main__':
     root = tk.Tk()

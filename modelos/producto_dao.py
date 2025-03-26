@@ -18,29 +18,22 @@ class ProductoDao:
             print(f"[!] Error al agregar el producto: {e}")
             return None
 
-    def get_object(self, nombre):
+    def list_objects(self, nombre):
         try:
             with get_connection() as connection:
-                cursor = connection.cursor()
-                cursor.execute("SELECT * FROM productos ")
-                productos = cursor.fetchall()
-                list_productos = []
-                for producto in productos:
-                    if nombre in producto[1]:
-                        list_productos.append(producto)
-                return list_productos
-
-        except Exception as e:
-            print(f"[!] Error al obtener el producto: {e}")
-            return None
-
-    def list_objects(self):
-        try:
-            with get_connection() as connection:
-                cursor = connection.cursor()
-                cursor.execute("SELECT id, nombre, categoria, precio, proveedor FROM productos")
-                productos = cursor.fetchall()
                 lista_productos = []
+                cursor = connection.cursor()
+                if nombre:
+                    cursor.execute("SELECT * FROM productos WHERE nombre LIKE ?", (f"{nombre}%",))
+                else:
+                    cursor.execute("SELECT * FROM productos")
+
+                # Manera "Profesional" de hacerlo
+                # query = "SELECT * FROM productos WHERE nombre LIKE ?" if nombre else "SELECT * FROM productos"
+                # params = (f"{nombre}%",) if nombre else ()
+                # cursor.execute(query, params)
+
+                productos = cursor.fetchall()
                 for producto in productos:
                     cursor.execute("SELECT  talla, stock, color FROM variantes WHERE productos_id = ?", (producto[0],))
                     variantes = [{"talla": variante[0], "stock": variante[1], "color": variante[2]} for variante in cursor.fetchall()]
