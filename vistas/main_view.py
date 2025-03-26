@@ -1,6 +1,7 @@
 import tkinter as tk
 from PIL import Image, ImageTk
 from screeninfo import get_monitors
+import vistas.product_form as product_form
 from controladores.producto_controlador import ProductoControlador
 
 def get_monitor_info():
@@ -16,7 +17,7 @@ class MainView():
         self.load_productos("")
 
     def centrar_pantalla(self):
-        width = 800
+        width = 900
         height = 600
         screen_width = get_monitor_info()
         screen_height = self.root.winfo_screenheight()
@@ -49,17 +50,25 @@ class MainView():
 
         frame_buttons = tk.Frame(self.frame_lista)
         frame_buttons.pack(pady=5)
-        tk.Button(frame_buttons, text="Add product", command=self.add_product).pack(side="left", pady=5)
-        tk.Button(frame_buttons, text="Modify product", command=self.modify_product).pack(side="left", pady=5)
-        tk.Button(frame_buttons, text="Delete product", command=self.delete_product).pack(side="left", pady=5)
+        tk.Button(frame_buttons, text="Add product", command=self.open_add_product).pack(side="left", pady=5)
+        tk.Button(frame_buttons, text="Modify product", command=self.open_modify_product).pack(side="left", pady=5)
+        tk.Button(frame_buttons, text="Delete product", command=self.open_delete_product).pack(side="left", pady=5)
 
-    def add_product(self):
+    def open_add_product(self):
+        self.frame_lista.pack_forget()
+        self.frame_form = product_form.ProductForm(self.container, on_save=self.add_product, on_cancel=self.show_list)
+        self.frame_form.pack()
+
+    def add_product(self, data):
         pass
 
-    def modify_product(self):
+    def show_list(self):
         pass
 
-    def delete_product(self):
+    def open_modify_product(self):
+        pass
+
+    def open_delete_product(self):
         pass
 
     def list_products(self, productos):
