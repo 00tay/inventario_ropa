@@ -18,7 +18,6 @@ def get_db_path():
     return os.path.abspath(db_path)
 
 def get_connection():
-
     db_path = get_db_path()
     return sqlite3.connect(db_path)
 

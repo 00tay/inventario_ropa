@@ -2,6 +2,7 @@ import tkinter as tk
 from PIL import Image, ImageTk
 from screeninfo import get_monitors
 import vistas.product_form as product_form
+from tkinter import messagebox
 from controladores.producto_controlador import ProductoControlador
 
 def get_monitor_info():
@@ -60,10 +61,28 @@ class MainView():
         self.frame_form.pack()
 
     def add_product(self, data):
-        pass
+        producto_controlador = ProductoControlador()
+        producto = producto_controlador.add_product(
+            data["nombre"],
+            data["categoria"],
+            data["precio"],
+            data["proveedor"],
+            data["variantes"]
+        )
+
+        if producto:
+            messagebox.showinfo("Success", "Product added successfully")
+            self.show_list()
+            self.load_productos("")
+        else:
+            messagebox.showerror("Error", "Failed to add product")
+
 
     def show_list(self):
-        pass
+        if hasattr(self, 'frame_form'):
+            self.frame_form.destroy()
+            self.frame_form = None
+        self.frame_lista.pack(fill="both", expand=True)
 
     def open_modify_product(self):
         pass
