@@ -47,13 +47,13 @@ class MainView():
 
         self.listbox_productos = tk.Listbox(self.frame_lista, width=82)
         self.listbox_productos.pack(padx=10, pady=10)
-        # self.listbox_productos.bind("<Double-Button-1>", self.abrir_modificar_producto)
-
+        self.listbox_productos.bind("<Double-Button-1>", lambda event: self.open_modify_product())
+        
         frame_buttons = tk.Frame(self.frame_lista)
         frame_buttons.pack(pady=5)
         tk.Button(frame_buttons, text="Add product", command=self.open_add_product).pack(side="left", pady=5)
         tk.Button(frame_buttons, text="Modify product", command=self.open_modify_product).pack(side="left", pady=5)
-        tk.Button(frame_buttons, text="Delete product", command=self.open_delete_product).pack(side="left", pady=5)
+        tk.Button(frame_buttons, text="Delete product", command=self.delete_product).pack(side="left", pady=5)
 
     def open_add_product(self):
         self.frame_lista.pack_forget()
@@ -77,7 +77,6 @@ class MainView():
         else:
             messagebox.showerror("Error", "Failed to add product")
 
-
     def show_list(self):
         if hasattr(self, 'frame_form'):
             self.frame_form.destroy()
@@ -85,10 +84,65 @@ class MainView():
         self.frame_lista.pack(fill="both", expand=True)
 
     def open_modify_product(self):
-        pass
+        product_id = self.get_id_product()
+        if not product_id:
+            return
+        producto_controlador = ProductoControlador()
+        producto = producto_controlador.get_product_by_id(product_id)
+        if not producto:
+            messagebox.showerror("Error", "Product not found")
+            return
+         
+        self.frame_lista.pack_forget()
+        self.frame_form = product_form.ProductForm(self.container, producto, on_save=self.update_product, on_cancel=self.show_list)
+        self.frame_form.pack()
+    
+    def update_product(self, product, id):
+        producto_controlador = ProductoControlador()
+        producto = producto_controlador.update_product(
+            product["nombre"],
+            product["categoria"],
+            product["precio"],
+            product["proveedor"],
+            id,
+            product["variantes"]
+        )
 
-    def open_delete_product(self):
-        pass
+        if producto:
+            messagebox.showinfo("Success", "Product updated successfully")
+            self.show_list()
+            self.load_productos("")
+        else:
+            messagebox.showerror("Error", "Failed to update product")
+
+    def get_id_product(self):
+        selection = self.listbox_productos.curselection()
+        if not selection:
+            messagebox.showwarning("Warning", "Select a product to modify")
+            return None
+        product = self.listbox_productos.get(selection)
+        try:
+            product_id = int(product.split("|")[0].split(":")[1].strip())
+        except ValueError:
+            messagebox.showerror("Error", "Obtaining product ID failed")
+            return None
+        return product_id
+
+    def delete_product(self):
+        try:
+            selection = self.listbox_productos.curselection()
+            if not selection:
+                messagebox.showwarning("Warning", "Select a product to delete")
+                return
+            product_id = self.get_id_product()
+            producto_controlador = ProductoControlador()
+            producto_controlador.delete_product(product_id)
+            self.load_productos("")
+            messagebox.showinfo("Success", "Product deleted successfully")
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to delete product: {e}")
+            return
+
 
     def list_products(self, productos):
         self.listbox_productos.delete(0, tk.END)

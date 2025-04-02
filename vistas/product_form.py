@@ -81,8 +81,12 @@ class ProductForm(tk.Frame):
             'variantes': self.variants
         }
         
-        if self.on_save:
-            self.on_save(data)
+        if self.product:
+            if self.on_save:
+                self.on_save(data, self.product.id)
+        else:
+            if self.on_save:
+                self.on_save(data)
 
     def add_variant(self):
         talla = self.entry_talla.get().strip()
@@ -133,8 +137,9 @@ class ProductForm(tk.Frame):
         else:
             messagebox.showerror("Error", "Seleccione una variante para eliminar.")
 
-    def creare_widgets(self):
-        pass
-
-    def load_data():
-        pass
+    def load_data(self):
+        self.entry_nombre.insert(0, self.product.nombre)
+        self.entry_categoria.insert(0, self.product.categoria)
+        self.entry_precio.insert(0, self.product.precio)
+        self.entry_proveedor.insert(0, self.product.proveedor)
+        self.reload_listbox()
