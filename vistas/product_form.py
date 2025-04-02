@@ -70,7 +70,7 @@ class ProductForm(tk.Frame):
         try:
             precio = float(precio)
         except ValueError:
-            messagebox.showerror("Error", "El precio debe ser un número.")
+            messagebox.showerror("Error", "Price has to be a number.")
             return
 
         data = {
